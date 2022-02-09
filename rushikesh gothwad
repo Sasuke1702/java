@@ -1,0 +1,83 @@
+import java.sql.*;
+
+public class jdbc {
+    public static void main(String[] args) {
+        String dbURL = "jdbc:sqlserver://http://remotemysql.com/";
+        String username = "1lAIHXc8Va";
+        String password = "TEMA3CTgGO";
+
+        try {
+
+            Connection conn = DriverManager.getConnection(dbURL, username, password);
+
+
+            if (conn != null) {
+                //insert
+                String sql = "INSERT INTO STUDENT (STUDENT_NO , STUDENT_NAME , STUDENT_DOB , STUDENT_DOJ ) VALUES (?, ?, ?, ?)";
+
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setString(1, "1");
+                statement.setString(2, "rushikesh");
+                statement.setString(3, "2000-01-01");
+                statement.setString(4, "2022-02-09");
+
+                int rowsInserted = statement.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("A new student was inserted successfully!");
+                }
+
+                //read
+                String sql2 = "SELECT * FROM STUDENT";
+
+                Statement statement2 = conn.createStatement();
+                ResultSet result = statement2.executeQuery(sql2);
+
+                int count = 0;
+
+                while (result.next()){
+                    String id = result.getString(2);
+                    String name = result.getString(3);
+                    String dob = result.getString("STUDENT_DOB");
+                    String doj = result.getString("STUDENT_DOJ");
+
+                    String output = "STUDENT #%d: %s - %s - %s - %s";
+                    System.out.println(String.format(output, ++count, id, name, dob, doj));
+                }
+                //update
+                String sql3 = "UPDATE STUDENT SET id=?, dob=?, doj=? WHERE name=?";
+
+                PreparedStatement statement3 = conn.prepareStatement(sql3);
+                statement.setString(1, "123456789");
+                statement.setString(2, "1999-10-08");
+                statement.setString(3, "2022-07-01");
+                statement.setString(4, "rushikesh");
+
+                int rowsUpdated = statement3.executeUpdate();
+                if (rowsUpdated > 0) {
+                    System.out.println("An existing student was updated successfully!");
+                }
+
+                //delete
+                String sql4 = "DELETE FROM STUDENT WHERE name=?";
+
+                PreparedStatement statement4 = conn.prepareStatement(sql4);
+                statement.setString(1, "rushikesh");
+
+                int rowsDeleted = statement4.executeUpdate();
+                if (rowsDeleted > 0) {
+                    System.out.println("A student was deleted successfully!");
+                }
+
+
+            }
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+
+
+
+    }
+}
